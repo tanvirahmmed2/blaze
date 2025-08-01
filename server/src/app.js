@@ -3,6 +3,7 @@ const morgan=require("morgan")
 const createHttpError = require("http-errors")
 const xssClean= require("xss-clean")
 const rateLimit= require("express-rate-limit")
+const userRouter = require("./routers/user.router")
 
 const app= express()
 
@@ -20,6 +21,10 @@ app.use(express.json())
 app.use(xssClean())
 app.use(rateLimiter)
 
+//userRouter
+
+app.use(userRouter)
+
 
 app.get("/", (req,res)=>{
     res.status(200).send({
@@ -35,26 +40,7 @@ app.get("/test", rateLimiter,(req,res)=>{
     })
 })
 //middleware
-const isLogin=(req,res,next)=>{
-    const login= true
-    if (login) {
-        req.body.id= 101
-        next()
-        
-    } else {
-        return res.status(404).json({
-            message: "please login first"
-        })
-    }
-}
 
-app.get("/api/user", isLogin, (req,res)=>{
-    console.log(`/api/user`)
-    console.log(req.body.id)
-    res.status(200).send({
-        message: "user profile is returned"
-    })
-})
 
 
 
