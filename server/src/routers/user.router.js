@@ -1,4 +1,5 @@
 const express = require("express")
+const getUser = require("../controllers/user.controller")
 const userRouter = express.Router()
 
 const isLogin = (req, res, next) => {
@@ -15,18 +16,11 @@ const isLogin = (req, res, next) => {
 }
 
 
-const users = [
-    { id: 1, name: "Tanvir Ahmmed" },
-    { id: 2, name: "Sara" },
-    { id: 3, name: "Ayan" }
-]
 
-userRouter.get("/api/user", isLogin, (req, res) => {
-    console.log(`/api/user`)
-    res.status(200).send({
-        message: "user profile is returned",
-        users: users
-    })
+
+userRouter.get("/", isLogin, getUser )
+userRouter.get("/profile", (req,res)=>{
+    res.send("User profile")
 })
 
 

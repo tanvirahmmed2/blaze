@@ -23,7 +23,7 @@ app.use(rateLimiter)
 
 //userRouter
 
-app.use(userRouter)
+app.use("/api/user",userRouter)
 
 
 app.get("/", (req,res)=>{
