@@ -1,10 +1,11 @@
 const app=require("./app")
+const connectDB = require("./config/database")
+const { serverPort } = require("./secret")
 require("dotenv").config()
 
-const PORT= process.env.PORT
-
-app.listen(PORT,()=>{
-    console.log(`server is runing at http://localhost:${PORT}`)
+app.listen(serverPort, async ()=>{
+    console.log(`server is runing at http://localhost:${serverPort}`)
+    await connectDB()
 })
 
 
