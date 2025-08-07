@@ -24,7 +24,7 @@ app.use(rateLimiter)
 
 //userRouter
 
-app.use("/api/user",userRouter)
+app.use("/api/users",userRouter)
 app.use('/api/seed', seedRouter)
 
 
@@ -38,7 +38,7 @@ app.get("/", (req,res)=>{
 
 app.get("/test", rateLimiter,(req,res)=>{
     res.status(200).send({
-        message: "server is running now 200"
+        message: "server is running now. status(200)"
     })
 })
 //middleware

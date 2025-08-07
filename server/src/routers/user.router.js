@@ -1,5 +1,5 @@
 const express = require("express")
-const getUser = require("../controllers/user.controller")
+const {getUser, registerUser } = require("../controllers/user.controller")
 const userRouter = express.Router()
 
 const isLogin = (req, res, next) => {
@@ -19,6 +19,11 @@ const isLogin = (req, res, next) => {
 
 
 userRouter.get("/", isLogin, getUser )
+
+userRouter.get("/register", registerUser)
+
+userRouter.post("/register", )
+
 userRouter.get("/profile", (req,res)=>{
     res.send("User profile")
 })

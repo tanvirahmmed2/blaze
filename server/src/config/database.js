@@ -4,7 +4,7 @@ const { mongodbUrl } = require("../secret")
 const connectDB= async (options={})=>{
     try {
         await mongoose.connect(mongodbUrl, options);
-        console.log(`databse server is connected`)
+        console.log(`database server is connected`)
         mongoose.connection.on('error', (error)=>{
             console.error('DB connection error: ', error)
         })
