@@ -20,9 +20,9 @@ const isLogin = (req, res, next) => {
 
 userRouter.get("/", isLogin, getUser )
 
-userRouter.get("/register", registerUser)
+userRouter.post("/register", registerUser)
 
-userRouter.post("/register", )
+
 
 userRouter.get("/profile", (req,res)=>{
     res.send("User profile")

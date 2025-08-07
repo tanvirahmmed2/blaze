@@ -1,62 +1,104 @@
-const User = require("../models/user.model")
-const createErr= require("http-errors")
+const createHttpError = require("http-errors");
+const User = require("../models/user.model");
+const { jwtactivationkey, clientURL } = require("../secret");
+const { createJsonwebtoken } = require("../helper/jsonwebtoken");
+const EmailwithNodeMailer = require("../helper/email");
 
-
+// ======================== GET USER ========================
 const getUser = async (req, res, next) => {
-    try {
+  try {
+    const search = req.query.search || "";
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-        const search= req.query.search || "";
-        const page= Number(req.query.page) || 1;
-        const limit= Number(req.query.limit) || 1;
+    const searchRegEx = new RegExp(search, "i"); // case-insensitive
 
-        const searchRegEx= new RegExp('.*' + search + '.*' )
+    const filter = {
+      isAdmin: { $ne: true },
+      $or: [
+        { name: { $regex: searchRegEx } },
+        { email: { $regex: searchRegEx } },
+        { phone: { $regex: searchRegEx } }
+      ]
+    };
 
-        const filter={
-            isAdmin:{$ne: true},
-            $or:[
-                {name: {$regex: searchRegEx}},
-                {email: {$regex: searchRegEx}},
-                {phone: {$regex: searchRegEx}}
-            ]
-        }
+    const users = await User.find(filter)
+      .select("-password")
+      .skip(skip)
+      .limit(limit);
 
-        const options= {password: 0}
+    const count = await User.countDocuments(filter);
 
-        const users= await User.find()
-
-        const count= await User.find(filter).countDocuments()
-
-
-        if(!users) throw createErr(404, "no users found")
-
-        res.status(200).send({
-            message: "user profile is returned",
-            users: users,
-            pagination: {
-                totalPages: Math.ceil(count / limit),
-                currentPgae: page - 1<= 0?  1 :null,
-                nextPage: page +1 <= Math.ceil(count / limit)? page + 1: null
-            }
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-
-
-const registerUser=  (req, res, next)=>{
-    try {
-        
-        
-
-        return successRespons(res, {
-            statusCode: 200,
-            message: "new user created"
-        })
-    } catch (error) {
-        next(error)
+    if (!users || users.length === 0) {
+      throw createHttpError(404, "No users found");
     }
 
-}
+    res.status(200).json({
+      message: "User profiles returned",
+      users,
+      pagination: {
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        nextPage: page < Math.ceil(count / limit) ? page + 1 : null,
+        prevPage: page > 1 ? page - 1 : null
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = {getUser, registerUser}
+// ======================== REGISTER USER ========================
+const registerUser = async (req, res, next) => {
+  try {
+    const { name, email, password, phone, address } = req.body;
+
+    const userExist = await User.exists({ email });
+
+    if (userExist) {
+      throw createHttpError(409, "User with this email already exists. Please try another.");
+    }
+
+    // Create JWT token
+    const token = createJsonwebtoken(
+      { name, email, password, phone, address },
+      jwtactivationkey,
+      "10m"
+    );
+
+    // Prepare email
+    const emailData = {
+      email,
+      subject: "Account Activation Mail",
+      html: `
+        <h2>Hello ${name}!</h2>
+        <p>Please click below to activate your account:</p>
+        <a href="${clientURL}/api/users/activate/${token}" target="_blank">
+          Activate Your Account
+        </a>
+      `
+    };
+
+    // Send email
+    try {
+      await EmailwithNodeMailer(emailData);
+    } catch (error) {
+      return next(createHttpError(500, "Failed to send verification email"));
+    }
+
+    return res.status(200).json({
+      message: `Please check your email (${email}) to complete registration.`,
+      payload: { token }
+    });
+
+  } catch (error) {
+    if (!error.status) error.status = 500;
+    next(error);
+  }
+};
+
+module.exports = {
+  getUser,
+  registerUser
+};
