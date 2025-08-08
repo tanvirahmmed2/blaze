@@ -74,7 +74,7 @@ const registerUser = async (req, res, next) => {
       html: `
         <h2>Hello ${name}!</h2>
         <p>Please click below to activate your account:</p>
-        <a href="${clientURL}/api/users/activate/${token}" target="_blank">
+        <a href="${clientURL}/api/users/verify/${token}" target="_blank">
           Activate Your Account
         </a>
       `
@@ -82,7 +82,7 @@ const registerUser = async (req, res, next) => {
 
     // Send email
     try {
-      // await EmailwithNodeMailer(emailData);
+      //  await EmailwithNodeMailer(emailData);
     } catch (error) {
       return next(createHttpError(500, "Failed to send verification email"));
     }
@@ -153,9 +153,9 @@ const updateUser = async (req, res) => {
     throw createHttpError(404, "not updated")
   }
   return res.status(200).json({
-      message: `user registered successfully`,
-      payload: {updatedUser}
-    });
+    message: `user registered successfully`,
+    payload: { updatedUser }
+  });
 
 }
 
