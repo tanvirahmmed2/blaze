@@ -4,7 +4,6 @@ const { jwtactivationkey, clientURL } = require("../secret");
 const { createJsonwebtoken } = require("../helper/jsonwebtoken");
 const EmailwithNodeMailer = require("../helper/email");
 
-// ======================== GET USER ========================
 const getUser = async (req, res, next) => {
   try {
     const search = req.query.search || "";
@@ -12,7 +11,7 @@ const getUser = async (req, res, next) => {
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const searchRegEx = new RegExp(search, "i"); // case-insensitive
+    const searchRegEx = new RegExp(search, "i");
 
     const filter = {
       isAdmin: { $ne: true },
@@ -49,25 +48,23 @@ const getUser = async (req, res, next) => {
   }
 };
 
-// ======================== REGISTER USER ========================
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, phone, address } = req.body;
 
-    const userExist = await User.exists({ email });
+    const userExist = await User.findOne({ email: email });
 
     if (userExist) {
       throw createHttpError(409, "User with this email already exists. Please try another.");
     }
 
-    // Create JWT token
+
     const token = createJsonwebtoken(
       { name, email, password, phone, address },
       jwtactivationkey,
       "10m"
     );
 
-    // Prepare email
     const emailData = {
       email,
       subject: "Account Activation Mail",
