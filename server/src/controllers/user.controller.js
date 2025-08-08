@@ -82,7 +82,7 @@ const registerUser = async (req, res, next) => {
 
     // Send email
     try {
-      //  await EmailwithNodeMailer(emailData);
+     await EmailwithNodeMailer(emailData);
     } catch (error) {
       return next(createHttpError(500, "Failed to send verification email"));
     }
