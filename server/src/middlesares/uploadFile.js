@@ -1,30 +1,25 @@
 require('dotenv').config()
 const multer= require("multer")
-const path= require('path')
 createErr= require("http-errors")
-const {UPLOAD_USER_IMAGE_DIR, FILE_TYPE, MAX_FILE_SIZE}= require("../config/index")
+const { FILE_TYPE, MAX_FILE_SIZE}= require("../config/index")
 
 
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, UPLOAD_USER_IMAGE_DIR)
-  },
-  filename: function (req, file, cb) {
-    const extname= path.extname(file.originalname)
-    cb(null, Date.now() + "_" + file.originalname.replace(extname, "" + extname))
-  }
-})
+const storage = multer.memoryStorage()
 
 const fileFilter= (req,file,cb)=>{
-    const extname= path.extname(file.originalname)
-    if(!FILE_TYPE.includes(extname.substring(1))){
-      
-      return cb(new Error("File type is not allowed"), false)
-    }
+   if(!file.mimetype.startsWith("image/")){
+    return cb(new Error("only image file's are allowed"), false)
+   }
+   if(file.size > MAX_FILE_SIZE){
+    return cb(new Error("file size exxced the size limi9t"), false)
 
-    cb(null, true)
+   }
+   if(!FILE_TYPE.includes(file.mimetypes)){
+    return cb(new Error("file type are not allowed"), false)
 
+   }
+   return cb(null, true)
 
 }
 
@@ -34,8 +29,7 @@ const fileFilter= (req,file,cb)=>{
 
 const upload = multer({ storage: storage ,
 
-  limits: {fileSize: MAX_FILE_SIZE},
-  fileFilter
+  fileFilter: fileFilter
 })
 
 module.exports= {upload}

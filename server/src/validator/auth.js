@@ -5,11 +5,8 @@ const { body } = require("express-validator")
 //registration
 const ValidateRegistration = [
     body("name")
-        .trim()
-        .notEmpty()
-        .withMessage("name is requrired")
-        .isLength({ min: 3, max: 30 })
-        .withMessage("name should be atleast 3-30 character"),
+        .trim(),
+        
     body("email")
         .trim()
         .notEmpty()
@@ -20,8 +17,6 @@ const ValidateRegistration = [
         .trim()
         .notEmpty()
         .withMessage("password is required")
-        .matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$")
-        .withMessage("Minimum eight characters, at least one uppercase letter, one lowercase letter and one number")
         .isLength({ min: 6 })
         .withMessage("password should be atleast 6 character"),
 

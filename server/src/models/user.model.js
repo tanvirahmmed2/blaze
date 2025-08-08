@@ -9,6 +9,12 @@ const userSchema= new mongoose.Schema({
         trim: true,
         maxlength: [31, 'username can be maximum 31 character']
     },
+    name: {
+        type: String,
+        require: [true, 'username is  missing'],
+        trim: true,
+        maxlength: [31, 'username can be maximum 31 character']
+    },
     password: {
         type: String,
         require: [true, 'user password is  missing'],
@@ -31,8 +37,9 @@ const userSchema= new mongoose.Schema({
         
     },
     image: {
-        type: String,
-        default: defaultImage,
+        type: Buffer,
+        ContentType: String,
+        require: true
         
     },
     adress: {
@@ -53,10 +60,6 @@ const userSchema= new mongoose.Schema({
     isBan: {
         type: Boolean,
         default: false
-        
-    },
-    name:{
-        type: String,
         
     },
     

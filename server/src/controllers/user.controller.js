@@ -53,7 +53,14 @@ const getUser = async (req, res, next) => {
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password, phone, address, image } = req.body;
+    const { name, email, password, phone, address } = req.body;
+
+
+    if(!req.file){
+      
+    }
+    const imageBufferString= req.file.buffer.toString('base64')
+
 
     const userExist = await User.findOne({ email: email });
 
