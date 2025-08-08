@@ -20,6 +20,8 @@ const ValidateRegistration = [
         .trim()
         .notEmpty()
         .withMessage("password is required")
+        .matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$")
+        .withMessage("Minimum eight characters, at least one uppercase letter, one lowercase letter and one number")
         .isLength({ min: 6 })
         .withMessage("password should be atleast 6 character"),
 
