@@ -3,6 +3,9 @@ const User = require("../models/user.model");
 const { jwtactivationkey, clientURL } = require("../secret");
 const { createJsonwebtoken } = require("../helper/jsonwebtoken");
 const EmailwithNodeMailer = require("../helper/email");
+const jwt = require('jsonwebtoken')
+
+
 
 const getUser = async (req, res, next) => {
   try {
@@ -50,7 +53,7 @@ const getUser = async (req, res, next) => {
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password, phone, address } = req.body;
+    const { name, email, password, phone, address, image } = req.body;
 
     const userExist = await User.findOne({ email: email });
 
@@ -60,7 +63,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address },
+      { name, email, password, phone, address, image },
       jwtactivationkey,
       "10m"
     );
@@ -79,7 +82,7 @@ const registerUser = async (req, res, next) => {
 
     // Send email
     try {
-      await EmailwithNodeMailer(emailData);
+      // await EmailwithNodeMailer(emailData);
     } catch (error) {
       return next(createHttpError(500, "Failed to send verification email"));
     }
@@ -95,7 +98,85 @@ const registerUser = async (req, res, next) => {
   }
 };
 
+
+
+const activateUser = async (req, res, next) => {
+
+
+  try {
+    const token = req.body.token
+    if (!token) throw createHttpError(404, 'token not found')
+    const decoded = jwt.verify(token, jwtactivationkey)
+
+    if (!decoded) throw createHttpError(401, 'token not verified')
+    await User.create(decoded)
+
+
+
+
+    return res.status(200).json({
+      message: `user registered successfully`,
+      payload: {}
+    });
+  } catch (error) {
+    next(error)
+  }
+
+
+}
+
+
+
+const updateUser = async (req, res) => {
+
+  const userid = req.params.id
+  const updateoptions = { new: true, runvalidators: true, context: "query" }
+
+  let updates = {}
+  if (req.body.name) {
+    updates.name = req.body.name;
+  }
+  if (req.body.password) {
+    updates.password = req.body.password;
+  }
+  if (req.body.phone) {
+    updates.phone = req.body.phone;
+  }
+  if (req.body.address) {
+    updates.address = req.body.address;
+  }
+
+
+
+  const updatedUser = await User.findByIdAndUpdate(userid, updates, updateoptions)
+  if (!updatedUser) {
+    throw createHttpError(404, "not updated")
+  }
+  return res.status(200).json({
+      message: `user registered successfully`,
+      payload: {updatedUser}
+    });
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
   getUser,
-  registerUser
+  registerUser,
+  activateUser,
+  updateUser
 };

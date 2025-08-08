@@ -1,5 +1,6 @@
 const express = require("express")
-const {getUser, registerUser } = require("../controllers/user.controller")
+const {getUser, registerUser, activateUser, updateUser } = require("../controllers/user.controller")
+const { upload } = require("../middlesares/uploadFile")
 const userRouter = express.Router()
 
 const isLogin = (req, res, next) => {
@@ -20,8 +21,11 @@ const isLogin = (req, res, next) => {
 
 userRouter.get("/", isLogin, getUser )
 
-userRouter.post("/register", registerUser)
 
+
+userRouter.post("/register", upload.single("image"), registerUser)
+userRouter.post("/verify", activateUser)
+userRouter.put("/:id", updateUser)
 
 
 userRouter.get("/profile", (req,res)=>{
