@@ -6,7 +6,6 @@ const { body } = require("express-validator")
 const ValidateRegistration = [
     body("name")
         .trim(),
-        
     body("email")
         .trim()
         .notEmpty()
@@ -20,7 +19,7 @@ const ValidateRegistration = [
         .isLength({ min: 6 })
         .withMessage("password should be atleast 6 character"),
 
-    body("adress")
+    body("address")
         .trim()
         .notEmpty()
         .withMessage("adress is required")
@@ -33,9 +32,13 @@ const ValidateRegistration = [
         .isLength({ min: 3 })
         .withMessage("address should be atleast 3 character"),
     body("image")
-    .optional()
-    .isString()
-    .withMessage("image is required")
+        .custom((value, {req})=>{
+            if(!req.file || req.file.buffer){
+                throw new Error("user image is required")
+            }
+            return true
+        })
+        .withMessage("image is required")
 
 
 

@@ -1,6 +1,6 @@
 const express = require("express")
 const {getUser, registerUser, activateUser, updateUser } = require("../controllers/user.controller")
-const { upload } = require("../middlesares/uploadFile")
+const { uploaduserImage } = require("../middlesares/uploadFile")
 const { ValidateRegistration } = require("../validator/auth")
 const {runValidation}= require("../validator/index")
 const userRouter = express.Router()
@@ -25,9 +25,9 @@ userRouter.get("/", isLogin, getUser )
 
 
 
-userRouter.post("/register", ValidateRegistration, runValidation,upload.single("image"), registerUser)
+userRouter.post("/register", ValidateRegistration, runValidation, uploaduserImage.single("image"), registerUser)
 userRouter.post("/verify", activateUser)
-userRouter.put("/:id", updateUser)
+userRouter.put("/:id", uploaduserImage.single('image'),updateUser)
 
 
 userRouter.get("/profile", (req,res)=>{

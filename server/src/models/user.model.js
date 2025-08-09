@@ -4,19 +4,19 @@ const bcrypt= require('bcryptjs')
 const userSchema= new mongoose.Schema({
     username: {
         type: String,
-        require: [true, 'username is  missing'],
+        required: [true, 'username is  missing'],
         trim: true,
         maxlength: [31, 'username can be maximum 31 character']
     },
     name: {
         type: String,
-        require: [true, 'username is  missing'],
+        required: [true, 'username is  missing'],
         trim: true,
         maxlength: [31, 'username can be maximum 31 character']
     },
     password: {
         type: String,
-        require: [true, 'user password is  missing'],
+        required: [true, 'user password is  missing'],
         trim: true,
         minlength: [3,'password length must be more than 3'],
         set: (v)=> bcrypt.hashSync(v, bcrypt.genSaltSync(10)),
@@ -29,7 +29,7 @@ const userSchema= new mongoose.Schema({
             },
             message: "please enter a valid email"
         },
-        require: [true, 'user name is  missing'],
+        required: [true, 'user name is  missing'],
         trim: true,
         unique: [true, 'email must be unique'],
         lowercase: true
@@ -38,17 +38,17 @@ const userSchema= new mongoose.Schema({
     image: {
         type: Buffer,
         ContentType: String,
-        require: true
+        required: true
         
     },
     adress: {
         type: String,
-        require: [true, 'adrees is required'],
+        required: [true, 'adrees is required'],
         
     },
     phone: {
         type: String,
-        require: [true, 'phone is required'],
+        required: [true, 'phone is required'],
         
     },
     isAdmin: {
