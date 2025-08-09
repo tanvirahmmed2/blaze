@@ -130,7 +130,21 @@ const activateUser = async (req, res, next) => {
 
 }
 
-
+const getUserbyID= async(req,res,next)=>{
+  try {
+    const id=req.body.id
+    const user= await User.findById({_id:id})
+    if(!user) throw new Error(404, 'user not found')
+    
+      res.status(200).send({
+        message: 'user found',
+        payload: {user}
+      })
+  } catch (error) {
+    next(error)
+    
+  }
+}
 
 const updateUser = async (req, res) => {
 
@@ -175,5 +189,6 @@ module.exports = {
   getUser,
   registerUser,
   activateUser,
-  updateUser
+  updateUser,
+  getUserbyID
 };

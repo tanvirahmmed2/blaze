@@ -6,7 +6,7 @@ const { createJsonwebtoken } = require("../helper/jsonwebtoken")
 const { jwtaccesskey } = require("../secret")
 
 
-const handleLogin = async (req, res) => {
+const handleLogin = async (req, res, next) => {
     try {
         //email/password
         const { email, password } = req.body
@@ -21,14 +21,14 @@ const handleLogin = async (req, res) => {
             throw createErr(403, "you're banned. Please contact authority")
         }
         const accesstoken = createJsonwebtoken(
-            {email },
+            { email },
             jwtaccesskey,
             "10m"
         );
 
 
         res.cookie('acces_token', accesstoken, {
-            maxAge: 15*60*1000,
+            maxAge: 15 * 60 * 1000,
             httpOnly: true,
             secure: true,
             sameSite: 'none',
@@ -42,11 +42,31 @@ const handleLogin = async (req, res) => {
             payload: { user }
         })
     } catch (error) {
-
+        next(error)
     }
 }
-const handleLogout= ()=>{
-    
+const handleLogout = async (req, res, next) => {
+    try {
+
+
+        res.clearCookie('access_token')
+
+
+
+
+
+
+
+        
+        //success response
+        return res.status(200).send({
+            message: 'user logged out succefully',
+            payload: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+
 }
 
-module.exports = {handleLogin, handleLogout}
+module.exports = { handleLogin, handleLogout }
