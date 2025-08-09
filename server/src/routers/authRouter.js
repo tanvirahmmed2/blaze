@@ -6,6 +6,7 @@ const authRouter = express.Router()
 
 
 authRouter.post("/login", handleLogin)
+authRouter.post("/logout", handleLogin.handleLogout)
 
 
 

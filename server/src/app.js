@@ -7,6 +7,8 @@ const userRouter = require("./routers/user.router")
 const seedRouter = require("./routers/seed.router")
 const authRouter = require("./routers/authRouter")
 
+const cookieParser = require('cookie-parser')
+
 const app= express()
 
 const rateLimiter= rateLimit({
@@ -16,7 +18,7 @@ const rateLimiter= rateLimit({
 
 })
 
-
+app.use(cookieParser())
 app.use(morgan('dev'))
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())

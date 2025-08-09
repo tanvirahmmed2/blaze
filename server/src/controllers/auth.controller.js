@@ -6,7 +6,6 @@ const { createJsonwebtoken } = require("../helper/jsonwebtoken")
 const { jwtaccesskey } = require("../secret")
 
 
-
 const handleLogin = async (req, res) => {
     try {
         //email/password
@@ -46,6 +45,8 @@ const handleLogin = async (req, res) => {
 
     }
 }
+const handleLogout= ()=>{
+    
+}
 
-
-module.exports = handleLogin
+module.exports = {handleLogin, handleLogout}
