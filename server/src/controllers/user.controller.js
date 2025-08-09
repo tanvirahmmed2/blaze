@@ -57,7 +57,7 @@ const registerUser = async (req, res, next) => {
 
 
     
-    // const imageBufferString = req.file.buffer.toString('base64')
+    const imageBufferString = req.file.buffer.toString('base64')
 
 
     const userExist = await User.findOne({ email: email });
@@ -68,7 +68,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address },
+      { name, email, password, phone, address , image: imageBufferString},
       jwtactivationkey,
       "10m"
     );
@@ -133,7 +133,7 @@ const activateUser = async (req, res, next) => {
 const getUserbyID= async(req,res,next)=>{
   try {
     const id=req.body.id
-    const user= await User.findById({_id:id})
+    const user= await User.findOne({_id:id})
     if(!user) throw new Error(404, 'user not found')
     
       res.status(200).send({

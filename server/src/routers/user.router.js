@@ -3,7 +3,8 @@ const {getUser, registerUser, activateUser, updateUser, getUserbyID } = require(
 const { uploaduserImage } = require("../middlesares/uploadFile")
 const { ValidateRegistration } = require("../validator/auth")
 const {runValidation}= require("../validator/index")
-const isLoggedin = require("../middlesares/auth")
+const { isLoggedin, isLoggedout }= require("../middlesares/auth")
+const { uploadFile } = require("../secret")
 const userRouter = express.Router()
 
 // const isLogin = (req, res, next) => {
@@ -27,9 +28,9 @@ userRouter.get("/:id", isLoggedin, getUserbyID )
 
 
 
-userRouter.post("/register",   registerUser)
-userRouter.post("/verify", activateUser)
-userRouter.put("/:id",updateUser)
+userRouter.post("/register", uploaduserImage.single('image'), isLoggedout, ValidateRegistration, runValidation,  registerUser)
+userRouter.post("/verify", isLoggedout,activateUser)
+userRouter.put("/:id", uploaduserImage.single('image'),isLoggedin,updateUser)
 
 
 userRouter.get("/profile", (req,res)=>{

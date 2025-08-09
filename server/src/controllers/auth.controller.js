@@ -21,13 +21,13 @@ const handleLogin = async (req, res, next) => {
             throw createErr(403, "you're banned. Please contact authority")
         }
         const accesstoken = createJsonwebtoken(
-            { email },
+            {user},
             jwtaccesskey,
             "10m"
         );
 
 
-        res.cookie('acces_token', accesstoken, {
+        res.cookie('accesToken', accesstoken, {
             maxAge: 15 * 60 * 1000,
             httpOnly: true,
             secure: true,
@@ -49,7 +49,7 @@ const handleLogout = async (req, res, next) => {
     try {
 
 
-        res.clearCookie('access_token')
+        res.clearCookie('accessToken')
 
 
 

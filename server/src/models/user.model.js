@@ -37,8 +37,8 @@ const userSchema= new mongoose.Schema({
         
     },
     image: {
-        type: String,
-        default: defaultImage
+        type: Buffer,
+        typeof: String
         
     },
     adress: {
