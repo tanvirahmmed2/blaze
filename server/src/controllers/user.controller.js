@@ -143,7 +143,7 @@ const updateUser = async (req, res) => {
 
   for (let key in req.body) {
     if (['name', 'password', 'phone', 'address'].includes(key)) {
-      updates[key] = req.body
+      updates[key] = req.body[key]
     }
   }
 
