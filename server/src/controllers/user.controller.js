@@ -68,7 +68,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address, image },
+      { name, email, password, phone, address },
       jwtactivationkey,
       "10m"
     );
