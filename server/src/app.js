@@ -5,6 +5,7 @@ const xssClean= require("xss-clean")
 const rateLimit= require("express-rate-limit")
 const userRouter = require("./routers/user.router")
 const seedRouter = require("./routers/seed.router")
+const authRouter = require("./routers/authRouter")
 
 const app= express()
 
@@ -26,6 +27,8 @@ app.use(rateLimiter)
 
 app.use("/api/users",userRouter)
 app.use('/api/seed', seedRouter)
+app.use('/api/auth', authRouter)
+
 
 
 app.get("/", (req,res)=>{

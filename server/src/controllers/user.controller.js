@@ -57,7 +57,7 @@ const registerUser = async (req, res, next) => {
 
 
     
-    const imageBufferString = req.file.buffer.toString('base64')
+    // const imageBufferString = req.file.buffer.toString('base64')
 
 
     const userExist = await User.findOne({ email: email });
@@ -68,7 +68,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address, image: imageBufferString },
+      { name, email, password, phone, address, image },
       jwtactivationkey,
       "10m"
     );

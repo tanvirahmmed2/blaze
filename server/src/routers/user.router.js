@@ -25,7 +25,7 @@ userRouter.get("/", isLogin, getUser )
 
 
 
-userRouter.post("/register", ValidateRegistration, runValidation, uploaduserImage.single("image"), registerUser)
+userRouter.post("/register",  uploaduserImage.single("image"), registerUser)
 userRouter.post("/verify", activateUser)
 userRouter.put("/:id", uploaduserImage.single('image'),updateUser)
 
