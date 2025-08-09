@@ -56,10 +56,10 @@ const registerUser = async (req, res, next) => {
     const { name, email, password, phone, address } = req.body;
 
 
-    if(!req.file){
-      
+    if (!req.file) {
+
     }
-    const imageBufferString= req.file.buffer.toString('base64')
+    const imageBufferString = req.file.buffer.toString('base64')
 
 
     const userExist = await User.findOne({ email: email });
@@ -89,7 +89,7 @@ const registerUser = async (req, res, next) => {
 
     // Send email
     try {
-     await EmailwithNodeMailer(emailData);
+      await EmailwithNodeMailer(emailData);
     } catch (error) {
       return next(createHttpError(500, "Failed to send verification email"));
     }
@@ -140,20 +140,12 @@ const updateUser = async (req, res) => {
   const updateoptions = { new: true, runvalidators: true, context: "query" }
 
   let updates = {}
-  if (req.body.name) {
-    updates.name = req.body.name;
-  }
-  if (req.body.password) {
-    updates.password = req.body.password;
-  }
-  if (req.body.phone) {
-    updates.phone = req.body.phone;
-  }
-  if (req.body.address) {
-    updates.address = req.body.address;
-  }
 
-
+  for (let key in req.body) {
+    if (['name', 'password', 'phone', 'address'].includes(key)) {
+      updates[key] = req.body
+    }
+  }
 
   const updatedUser = await User.findByIdAndUpdate(userid, updates, updateoptions)
   if (!updatedUser) {
