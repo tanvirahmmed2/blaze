@@ -48,10 +48,10 @@ const isAdmin=async (req,res,next)=>{
         if(!user.isAdmin){
             throw createErr(400, ' you must be and admin. You must be admin to eleborate the data ')
         }
-        return res.status(200).send({
-            message: 'successfull admin',
-            payload: {user}
-        })
+        // return res.status(200).send({
+        //     message: 'successfull admin',
+        //     payload: {user}
+        // })
         next()
     } catch (error) {
         next(error)
