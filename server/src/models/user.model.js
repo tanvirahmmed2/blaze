@@ -36,11 +36,13 @@ const userSchema= new mongoose.Schema({
         lowercase: true
         
     },
-    image: {
-        type: Buffer,
-        typeof: String
+    // image: {
+    //     type: Buffer,
+    //     typeof: String
         
-    },
+    // }
+    
+    // ,
     adress: {
         type: String,
         required: [true, 'adrees is required'],

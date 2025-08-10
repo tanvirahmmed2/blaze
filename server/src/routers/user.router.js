@@ -1,9 +1,9 @@
 const express = require("express")
-const {getUser, registerUser, activateUser, updateUser, getUserbyID } = require("../controllers/user.controller")
+const {getUser, registerUser, activateUser, updateUser, getUserbyID, banuserbyId } = require("../controllers/user.controller")
 const { uploaduserImage } = require("../middlesares/uploadFile")
 const { ValidateRegistration } = require("../validator/auth")
 const {runValidation}= require("../validator/index")
-const { isLoggedin, isLoggedout }= require("../middlesares/auth")
+const { isLoggedin, isLoggedout, isAdmin }= require("../middlesares/auth")
 const { uploadFile } = require("../secret")
 const userRouter = express.Router()
 
@@ -23,14 +23,15 @@ const userRouter = express.Router()
 
 
 
-userRouter.get("/",  getUser )
-userRouter.get("/:id", isLoggedin, getUserbyID )
+userRouter.get("/", isLoggedin, isAdmin, getUser )
+userRouter.get("/:id", isLoggedin,  getUserbyID )
 
 
 
 userRouter.post("/register", uploaduserImage.single('image'), isLoggedout, ValidateRegistration, runValidation,  registerUser)
 userRouter.post("/verify", isLoggedout,activateUser)
 userRouter.put("/:id", uploaduserImage.single('image'),isLoggedin,updateUser)
+userRouter.put("/ban-user", isLoggedin, isAdmin, banuserbyId)
 
 
 userRouter.get("/profile", (req,res)=>{

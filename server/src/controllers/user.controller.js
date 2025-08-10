@@ -171,6 +171,34 @@ const updateUser = async (req, res) => {
 }
 
 
+const banuserbyId= async(req,res,next)=>{
+  try {
+    const userId= req.params.id
+    const user=await User.findById(User, userId)
+    if(!user) return new Error(401, 'user doesnot exist')
+    const updates= {isBanned: true}
+    const updateOptions={ new: true, runvalidators: true, context: 'query'}
+    
+
+    const updatedUser= await User.findByIdAndUpdate(
+      userId,
+      updates,
+      updateOptions
+    ).select('-password')
+    if(!updatedUser){
+      throw createHttpError(400, 'user was not banned')
+    }
+    return res.status(200).send({
+      message: "user banned succesfully",
+      payload: {updatedUser}
+    })
+    
+  } catch (error) {
+    next(error)
+    
+  }
+}
+
 
 
 
@@ -190,5 +218,6 @@ module.exports = {
   registerUser,
   activateUser,
   updateUser,
-  getUserbyID
+  getUserbyID,
+  banuserbyId
 };
