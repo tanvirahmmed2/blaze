@@ -31,7 +31,7 @@ userRouter.get("/:id", isLoggedin,  getUserbyID )
 userRouter.post("/register", uploaduserImage.single('image'), isLoggedout, ValidateRegistration, runValidation,  registerUser)
 userRouter.post("/verify", isLoggedout,activateUser)
 userRouter.put("/:id", uploaduserImage.single('image'),isLoggedin,updateUser)
-userRouter.put("/ban-user", isLoggedin, isAdmin, banuserbyId)
+// userRouter.put("/ban-user/:id", isLoggedin, isAdmin , banuserbyId)
 
 
 userRouter.get("/profile", (req,res)=>{
