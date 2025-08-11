@@ -5,7 +5,7 @@ const { jwtaccesskey } = require("../secret")
 
 const isLoggedin = async (req, res, next) => {
     try {
-        const token = req.cookies.accesToken
+        const token = req.cookies.acces_Token
         if (!token) {
             throw createErr(401, 'access token not found')
         }
@@ -22,7 +22,7 @@ const isLoggedin = async (req, res, next) => {
 }
 const isLoggedout = async (req, res, next) => {
     try {
-        const token = req.cookies.accesToken
+        const token = req.cookies.acces_Token
         if (token) {
             try {
                 const decoded = jwt.verify(token, jwtaccesskey)

@@ -4,7 +4,8 @@ const { jwtactivationkey, clientURL } = require("../secret");
 const { createJsonwebtoken } = require("../helper/jsonwebtoken");
 const EmailwithNodeMailer = require("../helper/email");
 const jwt = require('jsonwebtoken')
-const bcrypt= require('bcryptjs')
+const bcrypt= require('bcryptjs');
+const mongoose = require("mongoose");
 
 
 
@@ -58,7 +59,7 @@ const registerUser = async (req, res, next) => {
 
 
     
-    const imageBufferString = req.file.buffer.toString('base64')
+    // const imageBufferString = req.file.buffer.toString('base64')
 
 
     const userExist = await User.findOne({ email: email });
@@ -69,7 +70,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address , image: imageBufferString},
+      { name, email, password, phone, address },
       jwtactivationkey,
       "10m"
     );
@@ -122,7 +123,7 @@ const activateUser = async (req, res, next) => {
 
     return res.status(200).json({
       message: `user registered successfully`,
-      payload: {}
+      payload: {decoded}
     });
   } catch (error) {
     next(error)
@@ -210,13 +211,29 @@ const handleupdatePassword= async (req,res,next)=>{
     if(!isPasswordMatch){
       throw createHttpError(401, "old password didn't match")
     }
+    const filter= {userId}
+    const update={$set: {password: newPassword}}
+    const updateOptions= {new: true}
+
+
+    const updateUser= await User.findByIdAndUpdate(
+      userId,
+      update,
+      updateOptions
+    ).select('-password')
+
+
+
 
     return res.status(200).send({
       message: 'password changed successfully',
-      payload:{user}
+      payload:{updateUser}
       
     })
   } catch (error) {
+    if( error instanceof mongoose.Error.CastError){
+      throw createHttpError(400, 'invalid id')
+    }
     next(error)
     
   }

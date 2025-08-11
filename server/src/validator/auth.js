@@ -31,14 +31,14 @@ const ValidateRegistration = [
         .withMessage("phone is required")
         .isLength({ min: 3 })
         .withMessage("address should be atleast 3 character"),
-    body("image")
-        .custom((value, {req})=>{
-            if(!req.file || req.file.buffer){
-                throw new Error("user image is required")
-            }
-            return true
-        })
-        .withMessage("image is required")
+    // body("image")
+    //     .custom((value, {req})=>{
+    //         if(!req.file || req.file.buffer){
+    //             throw new Error("user image is required")
+    //         }
+    //         return true
+    //     })
+    //     .withMessage("image is required")
 
 
 

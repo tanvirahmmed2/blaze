@@ -28,9 +28,9 @@ userRouter.get("/:id", isLoggedin,  getUserbyID )
 
 
 
-userRouter.post("/register", uploaduserImage.single('image'), isLoggedout, ValidateRegistration, runValidation,  registerUser)
+userRouter.post("/register",  isLoggedout, registerUser)
 userRouter.post("/verify", isLoggedout,activateUser)
-userRouter.put("/:id", uploaduserImage.single('image'),isLoggedin,updateUser)
+userRouter.put("/:id", isLoggedin,updateUser)
 // userRouter.put("/ban-user/:id", isLoggedin, isAdmin , banuserbyId)
 
 userRouter.put("/update-password/:id", isLoggedin, handleupdatePassword)

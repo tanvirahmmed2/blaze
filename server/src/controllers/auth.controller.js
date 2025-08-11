@@ -27,8 +27,21 @@ const handleLogin = async (req, res, next) => {
         );
 
 
-        res.cookie('accesToken', accesstoken, {
+        res.cookie('acces_Token', accesstoken, {
             maxAge: 15 * 60 * 1000,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        })
+        const refreshtoken = createJsonwebtoken(
+            {user},
+            jwtaccesskey,
+            "7d"
+        );
+
+
+        res.cookie('refresh_Token', refreshtoken, {
+            maxAge: 7*24* 60 *60* 1000,
             httpOnly: true,
             secure: true,
             sameSite: 'none',
@@ -39,7 +52,7 @@ const handleLogin = async (req, res, next) => {
         //success response
         return res.status(200).send({
             message: 'user logged in succefully',
-            payload: { user }
+            payload: { user , accesstoken}
         })
     } catch (error) {
         next(error)
@@ -49,9 +62,11 @@ const handleLogout = async (req, res, next) => {
     try {
 
 
-        res.clearCookie('accessToken')
-
-
+        res.clearCookie('acces_Token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
 
 
 
@@ -69,4 +84,23 @@ const handleLogout = async (req, res, next) => {
 
 }
 
-module.exports = { handleLogin, handleLogout }
+const handlerefreshToken= async(req,res,next)=>{
+    try {
+
+
+
+
+
+
+
+        
+       res.status(200).send({
+        message: "successful",
+        payload:{}
+       }) 
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { handleLogin, handleLogout, handlerefreshToken }
