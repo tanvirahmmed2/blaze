@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require("../models/user.model")
 const { createJsonwebtoken } = require("../helper/jsonwebtoken")
-const { jwtaccesskey } = require("../secret")
+const { jwtaccesskey, jwtrefreshkey } = require("../secret")
 
 
 const handleLogin = async (req, res, next) => {
@@ -21,7 +21,7 @@ const handleLogin = async (req, res, next) => {
             throw createErr(403, "you're banned. Please contact authority")
         }
         const accesstoken = createJsonwebtoken(
-            {user},
+            { user },
             jwtaccesskey,
             "10m"
         );
@@ -34,14 +34,14 @@ const handleLogin = async (req, res, next) => {
             sameSite: 'none',
         })
         const refreshtoken = createJsonwebtoken(
-            {user},
-            jwtaccesskey,
+            { user },
+            jwtrefreshkey,
             "7d"
         );
 
 
         res.cookie('refresh_Token', refreshtoken, {
-            maxAge: 7*24* 60 *60* 1000,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             secure: true,
             sameSite: 'none',
@@ -52,7 +52,7 @@ const handleLogin = async (req, res, next) => {
         //success response
         return res.status(200).send({
             message: 'user logged in succefully',
-            payload: { user , accesstoken}
+            payload: { user, accesstoken }
         })
     } catch (error) {
         next(error)
@@ -72,7 +72,7 @@ const handleLogout = async (req, res, next) => {
 
 
 
-        
+
         //success response
         return res.status(200).send({
             message: 'user logged out succefully',
@@ -84,23 +84,62 @@ const handleLogout = async (req, res, next) => {
 
 }
 
-const handlerefreshToken= async(req,res,next)=>{
+const handlerefreshToken = async (req, res, next) => {
     try {
+        const oldRefreshToken = req.cookies.refresh_Token; // ✅ correct name
+        if (!oldRefreshToken) {
+            throw createErr(401, 'refresh token not found');
+        }
 
+        const decoded = jwt.verify(oldRefreshToken, jwtrefreshkey); // will throw if invalid
+        const user = decoded.user;
 
+        const accesstoken = createJsonwebtoken(
+            { user },
+            jwtaccesskey,
+            "10m"
+        );
 
+        res.cookie('acces_Token', accesstoken, {
+            maxAge: 15 * 60 * 1000,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
 
+        res.status(200).send({
+            message: "successful",
+            payload: { accesstoken }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+const handleProtectedRoute = async (req, res, next) => {
+    try {
+        const accesstoken = req.cookies.access_Token; 
+        if (!accesstoken) {
+            throw createErr(401, 'refresh token not found');
+        }
 
+        const decoded = jwt.verify(accesstoken, jwtrefreshkey); // will throw if invalid
+        if(!decoded){
+            throw createErr(401, 'invalid access token')
+        }
 
+      
 
         
-       res.status(200).send({
-        message: "successful",
-        payload:{}
-       }) 
-    } catch (error) {
-        next(error)
-    }
-}
 
-module.exports = { handleLogin, handleLogout, handlerefreshToken }
+        res.status(200).send({
+            message: "protected resources successfully",
+            payload: { accesstoken }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+module.exports = { handleLogin, handleLogout, handlerefreshToken,handleProtectedRoute }

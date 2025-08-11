@@ -48,11 +48,17 @@ const ValidateRegistration = [
 
 
 
-
+const validateRefreshToken=[
+    body('refreshToken')
+    .trim()
+    .notEmpty()
+    .withMessage('refreshToken in required')
+]
 
 
 
 module.exports = {
     ValidateRegistration,
+    validateRefreshToken
 
 }
