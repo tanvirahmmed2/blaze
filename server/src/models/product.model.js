@@ -21,6 +21,9 @@ const productShema = new mongoose.Schema({
         validate:{
             validator: function (v){
                 return v>0
+            },
+            message: (props)=>{
+                `${props.value} is not a valid price. price must be greater than 0`
             }
         }
     },
