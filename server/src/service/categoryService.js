@@ -32,12 +32,19 @@ const getCategories= async()=>{
 const getCategory= async(slug)=>{
     return await Category.find({slug}).select('name slug').lean()
 }
+
+
+
 const updateCategory= async(slug, name)=>{
     const updateCategory= await Category.findOneAndUpdate({slug}, {$set: {name: name, slug: slugify(name)}}, {new:true})
     return updateCategory
+}
+const deleteCategory= async(slug)=>{
+    const deleteCategory= await Category.findOneAndDelete({slug}, {new:true})
+    return deleteCategory
 }
 
 
 
 
-module.exports = { createCategory, getCategories, getCategory, updateCategory }
+module.exports = { createCategory, getCategories, getCategory, updateCategory, deleteCategory }

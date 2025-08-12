@@ -1,7 +1,7 @@
 const slugify= require('slugify')
 const createErr= require("http-errors")
 const Category= require('../models/category.model')
-const { createCategory, getCategories, getCategory, updateCategory } = require('../service/categoryService')
+const { createCategory, getCategories, getCategory, updateCategory, deleteCategory } = require('../service/categoryService')
 
 
 const hanldeCreateCategory= async(req,res,next)=>{
@@ -83,7 +83,7 @@ const hanldeupdateCategory= async(req,res,next)=>{
 
         res.status(200).send({
             message: "category updated successfully",
-            oldaName: slug,
+            oldaName: {slug},
             payload:{updatedcategory}
         })
     } catch (error) {
@@ -91,5 +91,30 @@ const hanldeupdateCategory= async(req,res,next)=>{
         
     }
 }
+const handledeleteCategory= async(req,res,next)=>{
+    try {
 
-module.exports= {hanldeCreateCategory, handlegetCategories, handlegetCategory, hanldeupdateCategory}
+
+        const {slug}= req.params 
+        
+        const updatedcategory= await deleteCategory(slug)
+
+
+        if(!updatedcategory){
+            throw createErr(401, 'category not found')
+        }
+
+
+
+
+
+        res.status(200).send({
+            message: "category deleted successfully",
+        })
+    } catch (error) {
+        next(error)
+        
+    }
+}
+
+module.exports= {hanldeCreateCategory, handlegetCategories, handlegetCategory, hanldeupdateCategory, handledeleteCategory}
