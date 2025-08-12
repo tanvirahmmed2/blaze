@@ -9,6 +9,8 @@ const authRouter = require("./routers/authRouter")
 
 const cookieParser = require('cookie-parser')
 const categoryRouter = require("./routers/categoryRouter")
+const productRouter = require("./routers/product.router")
+
 
 const app= express()
 
@@ -32,6 +34,8 @@ app.use("/api/users",userRouter)
 app.use('/api/seed', seedRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/category', categoryRouter)
+app.use('/api/product', productRouter)
+
 
 
 
