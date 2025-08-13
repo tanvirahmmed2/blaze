@@ -60,7 +60,7 @@ const registerUser = async (req, res, next) => {
 
     const image= req.file;
     if(!image){
-      throw createHttpError(400,' image is required')
+      throw createHttpError(401,' image is required')
     }
     if(image.size> 1024*1024*2){
       throw createHttpError(400, 'image size must be lower than 2MB')
