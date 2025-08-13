@@ -24,7 +24,7 @@ const getProducts = async (req, res, next) => {
 
 const handlecreateProduct= async(req,res,next)=>{
     try {
-        const {name, description, price, quantity, sold, shipping,  category}= req.body
+        const {name, description, price, quantity,  shipping,  category}= req.body
         const image= req.file
         if(!image){
             throw createErr(400, 'image file not found')
@@ -40,12 +40,19 @@ const handlecreateProduct= async(req,res,next)=>{
 
         const product= await Product.create({
             name: name,
-            slug: slugify(name)
+            slug: slugify(name),
+            description: description,
+            price: price,
+            quantity: quantity,
+            shipping: shipping,
+            image: imageBufferString,
+            category: category
         })
 
 
         res.status(200).send({
-            message: "products created successfully"
+            message: "products created successfully",
+            payload:{product}
         })
     } catch (error) {
         next(error)
