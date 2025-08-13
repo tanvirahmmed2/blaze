@@ -21,7 +21,18 @@ const getProducts = async (req, res, next) => {
 
 
 
-const handlecreateProduct=()=>{
+const handlecreateProduct= async(req,res,next)=>{
+    try {
+        
 
+
+
+
+        res.status(200).send({
+            message: "products created successfully"
+        })
+    } catch (error) {
+        next(error)
+    }
 }
 module.exports = {getProducts, handlecreateProduct};
