@@ -76,12 +76,13 @@ app.use(( req,res,next)=>{
     next(createHttpError(405, "route not found"))
     
 })
-app.use((err, req,res,next)=>{
-    return res.status(err.status).json({
-        success: false,
-        message: err.message
-    })
-})
+app.use((err, req, res, next) => {
+    console.error(err); // optional: log for debugging
+    const status = err.status || 500; // fallback to 500
+    const message = err.message || "Internal Server Error";
+    res.status(status).json({ message });
+});
+
 
 module.exports= app
 

@@ -1,4 +1,4 @@
-const { body } = require('express-validator')
+const { body } = require('express-validator');
 
 const validateProduct = [
     body('name')
@@ -6,31 +6,32 @@ const validateProduct = [
         .notEmpty()
         .withMessage('Product name is required')
         .isLength({ min: 3 })
-        .withMessage("Name must be more than 3 character"),
+        .withMessage("Name must be more than 3 characters"),
+
     body('price')
         .trim()
         .notEmpty()
-        .withMessage('price is required'),
+        .withMessage('Price is required'),
+
     body('description')
         .trim()
         .notEmpty()
-        .withMessage('description is required')
+        .withMessage('Description is required')
         .isLength({ min: 3 })
-        .withMessage("description must be more than 3 character"),
+        .withMessage("Description must be more than 3 characters"),
+
     body('quantity')
         .trim()
         .notEmpty()
-        .withMessage('quantity is required'),
+        .withMessage('Quantity is required'),
+
     body("image")
         .custom((value, { req }) => {
-            if (!req.file || req.file.buffer) {
-                throw new Error("user image is required")
+            if (!req.file) { // ✅ check only if file exists
+                throw new Error("Product image is required");
             }
-            return true
+            return true;
         })
-        .withMessage("image is required")
+];
 
-
-]
-
-module.exports = validateProduct
+module.exports = validateProduct;

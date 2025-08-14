@@ -7,21 +7,17 @@ const { FILE_TYPE, MAX_FILE_SIZE}= require("../config/index")
 
 const storage = multer.memoryStorage()
 
-const fileFilter= (req,file,cb)=>{
-   if(!file.mimetype.startsWith("image/")){
-    return cb(new Error("only image file's are allowed"), false)
-   }
-   if(file.size > MAX_FILE_SIZE){
-    return cb(new Error("file size exxced the size limi9t"), false)
+const fileFilter = (req, file, cb) => {
+    console.log("Uploaded file type:", file.mimetype); // debug
+    if (!file.mimetype.startsWith("image/")) {
+        return cb(createErr(400, "Only image files are allowed"), false);
+    }
+    if (!FILE_TYPE.includes(file.mimetype)) {
+        return cb(createErr(400, "File type are not allowed"), false);
+    }
+    cb(null, true);
+};
 
-   }
-   if(!FILE_TYPE.includes(file.mimetypes)){
-    return cb(new Error("file type are not allowed"), false)
-
-   }
-   return cb(null, true)
-
-}
 
 
 
