@@ -13,13 +13,13 @@ const validateProduct = [
         .withMessage('price is required'),
     body('description')
         .trim()
-        .notEmpty
+        .notEmpty()
         .withMessage('description is required')
         .isLength({ min: 3 })
         .withMessage("description must be more than 3 character"),
     body('quantity')
         .trim()
-        .notEmpty
+        .notEmpty()
         .withMessage('quantity is required'),
     body("image")
         .custom((value, { req }) => {
