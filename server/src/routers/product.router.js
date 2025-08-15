@@ -9,7 +9,7 @@ const productRouter= express.Router()
 
 productRouter.get('/',getProducts)
 productRouter.post('/create', isLoggedin, isAdmin, uploadproductimage.single('image'), validateProduct, runValidation,handlecreateProduct)
-productRouter.get('/:slug', handlesingleProduct )
+productRouter.get('/:name', handlesingleProduct )
 
 
 module.exports= productRouter

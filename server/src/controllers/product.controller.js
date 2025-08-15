@@ -63,7 +63,21 @@ const handlecreateProduct = async (req, res, next) => {
 };
 
 const handlesingleProduct= async(req,res,next)=>{
+  try {
+    const name= req.params.name
+    const slug= slugify(name)
 
+    const product= await Product.findOne({slug: slug})
+
+
+    res.status(200).send({
+      message: "Product returned",
+      payload: {product}
+    })
+  } catch (error) {
+    next(error)
+    
+  }
 }
 
 
