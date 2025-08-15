@@ -55,7 +55,7 @@ const getUser = async (req, res, next) => {
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password, phone, address } = req.body;
+    const { name, email, password, phone, address, username } = req.body;
 
 
     const image= req.file;
@@ -66,8 +66,7 @@ const registerUser = async (req, res, next) => {
       throw createHttpError(400, 'image size must be lower than 2MB')
 
     }
-    const imageBufferString = req.file.buffer.toString('base64')
-
+    
 
     const userExist = await User.findOne({ email: email });
 
@@ -77,7 +76,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address, image:  imageBufferString},
+      { name, email, password, phone, address, username, image},
       jwtactivationkey,
       "10m"
     );

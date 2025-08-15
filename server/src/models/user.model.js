@@ -43,7 +43,7 @@ const userSchema= new mongoose.Schema({
     // }
     
     // ,
-    adress: {
+    address: {
         type: String,
         required: [true, 'adrees is required'],
         

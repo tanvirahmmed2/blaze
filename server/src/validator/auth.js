@@ -6,6 +6,10 @@ const { body } = require("express-validator")
 const ValidateRegistration = [
     body("name")
         .trim(),
+    body("username")
+        .trim()
+        .notEmpty()
+        .withMessage("username is required"),
     body("email")
         .trim()
         .notEmpty()
