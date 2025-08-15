@@ -2,6 +2,8 @@ const createErr = require('http-errors');
 const slugify = require('slugify')
 const Product = require("../models/product.model");
 const { deleteProduct } = require('../service/product.service');
+const { runValidation } = require('../validator');
+const { Context } = require('express-validator/lib/context');
 
 const getProducts = async (req, res, next) => {
   try {
@@ -138,11 +140,43 @@ const handleDelete= async(req,res,next)=>{
 const handleUpdate= async (req,res,next)=>{
   try {
 
-    const slug= req.params
+    const {slug}= req.params
+    const updateOptions={
+      new:true,
+      runValidation: true,
+      Context: 'query'
+    }
+
+    let updates={}
+    const allowedFeilds=[ 'name', 'price', 'description', 'sold', 'quantity', 'shipping']
+    for(const key in req.body){
+      if(allowedFeilds.includes(key)){
+        updates[key]= req.body[key]
+      }
+    }
+    const image=req.file
+
+    if(image){
+      if(image.size> 1024*1024*10){
+        throw createErr('file too large')
+
+      }
+      updates.image= image
+    }
+
+    const updatedProduct= await Product.findOneAndUpdate(
+      slug,
+      updates,
+      updateOptions
+
+    )
+    if(!updatedProduct){
+      throw createErr("product not updated")
+    }
 
     res.status(200).send({
       message: "product updated",
-      payload:{slug}
+      payload:{updatedProduct}
     })
     
   } catch (error) {
