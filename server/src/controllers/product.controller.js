@@ -62,7 +62,9 @@ const handlecreateProduct = async (req, res, next) => {
   }
 };
 
+const handlesingleProduct= async(req,res,next)=>{
+
+}
 
 
-
-module.exports = {getProducts, handlecreateProduct};
+module.exports = {getProducts, handlecreateProduct, handlesingleProduct};
