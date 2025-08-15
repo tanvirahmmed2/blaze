@@ -4,7 +4,16 @@ const Product = require("../models/product.model");
 
 const getProducts = async (req, res, next) => {
     try {
-        const products = await Product.find({});
+      const page=parseInt(req.query.page) || 1;
+      const limit=parseInt(req.query.limit) || 4;
+
+
+        const products = await Product.find({})
+        .populate("category")
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({createdAt: -1})
+
         
         if (!products.length) {
             return next(createErr(404, 'No products found'));
