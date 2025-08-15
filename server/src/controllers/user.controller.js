@@ -88,7 +88,7 @@ const registerUser = async (req, res, next) => {
       html: `
         <h2>Hello ${name}!</h2>
         <p>Please click below to activate your account:</p>
-        <a href="${clientURL}/api/users/verify/${token}" target="_blank">
+        <a href="${clientURL}/api/users/verify/${token}" >
           Activate Your Account
         </a>
       `

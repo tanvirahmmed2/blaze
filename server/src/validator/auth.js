@@ -32,13 +32,12 @@ const ValidateRegistration = [
         .isLength({ min: 3 })
         .withMessage("address should be atleast 3 character"),
     body("image")
-        .custom((value, {req})=>{
-            if(!req.file || req.file.buffer){
-                throw new Error("user image is required")
+        .custom((value, { req }) => {
+            if (!req.file) { 
+                throw new Error("image is required");
             }
-            return true
+            return true;
         })
-        .withMessage("image is required")
 
 
 
