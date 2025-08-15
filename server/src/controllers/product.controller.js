@@ -137,51 +137,59 @@ const handleDelete= async(req,res,next)=>{
 }
 
 
-const handleUpdate= async (req,res,next)=>{
+const handleUpdate = async (req, res, next) => {
   try {
+    const { slug } = req.params;
+    const updateOptions = {
+      new: true,
+      runValidators: true,
+      context: 'query'
+    };
 
-    const {slug}= req.params
-    const updateOptions={
-      new:true,
-      runValidation: true,
-      Context: 'query'
-    }
-
-    let updates={}
-    const allowedFeilds=[ 'name', 'price', 'description', 'sold', 'quantity', 'shipping']
-    for(const key in req.body){
-      if(allowedFeilds.includes(key)){
-        updates[key]= req.body[key]
+    let updates = {};
+    const allowedFields = ['name', 'price', 'description', 'sold', 'quantity', 'shipping'];
+    for (const key in req.body) {
+      if (allowedFields.includes(key)) {
+        updates[key] = req.body[key];
       }
     }
-    const image=req.file
 
-    if(image){
-      if(image.size> 1024*1024*10){
-        throw createErr('file too large')
-
-      }
-      updates.image= image
+    if (updates.name) {
+      updates.slug = slugify(updates.name);
     }
 
-    const updatedProduct= await Product.findOneAndUpdate(
-      slug,
+    const image = req.file;
+    if (image) {
+      if (image.size > 1024 * 1024 * 10) {
+        throw createErr(400, 'file too large');
+      }
+      // Adjust this according to your schema
+      updates.image = {
+        data: image.buffer,
+        contentType: image.mimetype
+      };
+    }
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { slug },
       updates,
       updateOptions
+    );
 
-    )
-    if(!updatedProduct){
-      throw createErr("product not updated")
+    if (!updatedProduct) {
+      throw createErr(404, 'product not updated');
     }
 
-    res.status(200).send({
-      message: "product updated",
-      payload:{updatedProduct}
-    })
-    
+    res.status(200).json({
+      message: 'product updated',
+      payload: updatedProduct
+    });
   } catch (error) {
-    next(error)
-    
+    console.error('Update product error:', error);
+    next(error);
   }
-}
+};
+
+
+
 module.exports = { getProducts, handlecreateProduct, handlesingleProduct,handleDelete, handleUpdate };
