@@ -134,4 +134,20 @@ const handleDelete= async(req,res,next)=>{
   }
 }
 
-module.exports = { getProducts, handlecreateProduct, handlesingleProduct,handleDelete };
+
+const handleUpdate= async (req,res,next)=>{
+  try {
+
+    const slug= req.params
+
+    res.status(200).send({
+      message: "product updated",
+      payload:{slug}
+    })
+    
+  } catch (error) {
+    next(error)
+    
+  }
+}
+module.exports = { getProducts, handlecreateProduct, handlesingleProduct,handleDelete, handleUpdate };
