@@ -22,23 +22,23 @@ const getProducts = async (req, res, next) => {
       return next(createErr(404, 'No products found'));
     }
 
-    const count= await Product.find({})
-    .countDocuments()
+    const count = await Product.find({})
+      .countDocuments()
 
 
 
     res.status(200).send({
       message: "Products returned",
-      payload: { 
+      payload: {
         products: products,
         pagination: {
-          totalPage: Math.ceil(count/limit),
+          totalPage: Math.ceil(count / limit),
           currPage: page,
-          prevPage: page -1,
-          nextPage: page +1,
+          prevPage: page - 1,
+          nextPage: page + 1,
           totalNumberofProduct: count
         }
-       }
+      }
 
     });
   } catch (error) {
@@ -114,11 +114,11 @@ const handlesingleProduct = async (req, res, next) => {
   }
 }
 
-const handleDelete= async(req,res,next)=>{
+const handleDelete = async (req, res, next) => {
   try {
 
-    const {slug}= req.params
-    if(!slug){
+    const { slug } = req.params
+    if (!slug) {
       throw createErr(402, 'slug not found')
     }
 
@@ -132,7 +132,7 @@ const handleDelete= async(req,res,next)=>{
     })
   } catch (error) {
     next(error)
-    
+
   }
 }
 
@@ -163,7 +163,7 @@ const handleUpdate = async (req, res, next) => {
       if (image.size > 1024 * 1024 * 10) {
         throw createErr(400, 'file too large');
       }
-      // Adjust this according to your schema
+
       updates.image = {
         data: image.string
       };
@@ -188,7 +188,48 @@ const handleUpdate = async (req, res, next) => {
     next(error);
   }
 };
+const handleSearch = async (req, res, next) => {
+  try {
+
+    const serach = req.params.serach || '';
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+
+    const searchRegExp = new RegExp('.*' + serach + '.*', 'i')
+
+    const filter = {
+      $or: [
+        { name: { $regex: searchRegExp } }
+      ]
+    }
+
+  
+
+    const productData= await Product.find(filter)
+    if(!productData){
+      throw createErr(400, 'product not found')
+    }
+
+     const count = await Product.find(filter)
+      .countDocuments()
 
 
+    res.status(200).send({
+      message: 'search aplied',
+      payload: {
+        product: productData,
+        currentPage: page,
+        nextpage: page+1,
+        prevpage: page - 1,
+        totalPage: Math.ceil(count/limit),
+        totalItem: count
+      }
+    })
+  } catch (error) {
+    next(error)
 
-module.exports = { getProducts, handlecreateProduct, handlesingleProduct,handleDelete, handleUpdate };
+  }
+}
+
+
+module.exports = { handleSearch, getProducts, handlecreateProduct, handlesingleProduct, handleDelete, handleUpdate };
