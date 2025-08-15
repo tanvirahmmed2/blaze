@@ -48,12 +48,11 @@ const handlecreateProduct = async (req, res, next) => {
       quantity: quantity,
       shipping: shipping,
       category: category,
-      image: {
-        data: image.buffer,      // ✅ store as Buffer
-        contentType: image.mimetype // ✅ store MIME type
-      }
+      
     });
-
+ if(image){
+  product.image= image
+ }
     res.status(201).send({
       message: "Product created successfully",
       payload: { product }

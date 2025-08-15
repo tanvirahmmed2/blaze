@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { defaultImage } = require('../secret');
 const { Schema } = mongoose;
 
 const productSchema = new Schema({
@@ -53,8 +54,8 @@ const productSchema = new Schema({
         default: 0
     },
     image: {
-        data: { type: Buffer, required: true },
-        contentType: { type: String, required: true }
+        type: String,
+        default: defaultImage
     }
     ,
     category: {

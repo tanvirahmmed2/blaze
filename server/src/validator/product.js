@@ -26,12 +26,9 @@ const validateProduct = [
         .withMessage('Quantity is required'),
 
     body("image")
-        .custom((value, { req }) => {
-            if (!req.file) { // ✅ check only if file exists
-                throw new Error("Product image is required");
-            }
-            return true;
-        })
+        .isString()
+        .optional()
+        .withMessage("product image is optional")
 ];
 
 module.exports = validateProduct;
