@@ -115,7 +115,7 @@ const handlesingleProduct = async (req, res, next) => {
 const handleDelete= async(req,res,next)=>{
   try {
 
-    const {slug}= req.body
+    const {slug}= req.params
     if(!slug){
       throw createErr(402, 'slug not found')
     }

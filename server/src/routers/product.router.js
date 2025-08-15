@@ -10,7 +10,7 @@ const productRouter= express.Router()
 productRouter.get('/',getProducts)
 productRouter.post('/create', isLoggedin, isAdmin, uploadproductimage.single('image'), validateProduct, runValidation,handlecreateProduct)
 productRouter.get('/:name', handlesingleProduct )
-productRouter.delete('/', isLoggedin, isAdmin, handleDelete)
+productRouter.delete('/:slug', isLoggedin, isAdmin, handleDelete)
 
 
 module.exports= productRouter
