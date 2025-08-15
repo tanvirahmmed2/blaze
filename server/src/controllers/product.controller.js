@@ -1,31 +1,47 @@
 const createErr = require('http-errors');
-const slugify= require('slugify')
+const slugify = require('slugify')
 const Product = require("../models/product.model");
+const { deleteProduct } = require('../service/product.service');
 
 const getProducts = async (req, res, next) => {
-    try {
-      const page=parseInt(req.query.page) || 1;
-      const limit=parseInt(req.query.limit) || 4;
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
 
 
-        const products = await Product.find({})
-        .populate("category")
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .sort({createdAt: -1})
+    const products = await Product.find({})
+      .populate("category")
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 })
 
-        
-        if (!products.length) {
-            return next(createErr(404, 'No products found'));
-        }
 
-        res.status(200).send({
-            message: "Products returned",
-            payload: { products }
-        });
-    } catch (error) {
-        next(error);
+    if (!products.length) {
+      return next(createErr(404, 'No products found'));
     }
+
+    const count= await Product.find({})
+    .countDocuments()
+
+
+
+    res.status(200).send({
+      message: "Products returned",
+      payload: { 
+        products: products,
+        pagination: {
+          totalPage: Math.ceil(count/limit),
+          currPage: page,
+          prevPage: page -1,
+          nextPage: page +1,
+          totalNumberofProduct: count
+        }
+       }
+
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 
@@ -57,11 +73,11 @@ const handlecreateProduct = async (req, res, next) => {
       quantity: quantity,
       shipping: shipping,
       category: category,
-      
+
     });
- if(image){
-  product.image= image
- }
+    if (image) {
+      product.image = image
+    }
     res.status(201).send({
       message: "Product created successfully",
       payload: { product }
@@ -71,24 +87,46 @@ const handlecreateProduct = async (req, res, next) => {
   }
 };
 
-const handlesingleProduct= async(req,res,next)=>{
+const handlesingleProduct = async (req, res, next) => {
   try {
-    const name= req.params.name
-    if(!name){
+    const name = req.params.name
+    if (!name) {
       throw createErr(400, 'Enter product name')
     }
-    const slug= slugify(name)
+    const slug = slugify(name)
 
-    const product= await Product.findOne({slug: slug})
-    if(!product){
+    const product = await Product.findOne({ slug: slug })
+    if (!product) {
       throw createErr(400, "no product found by this name")
     }
-  
+
 
 
     res.status(200).send({
       message: "Product returned",
-      payload: {product}
+      payload: { product }
+    })
+  } catch (error) {
+    next(error)
+
+  }
+}
+
+const handleDelete= async(req,res,next)=>{
+  try {
+
+    const {slug}= req.body
+    if(!slug){
+      throw createErr(402, 'slug not found')
+    }
+
+    await deleteProduct(slug)
+
+
+
+
+    res.status(200).send({
+      message: "product deleted successfully"
     })
   } catch (error) {
     next(error)
@@ -96,5 +134,4 @@ const handlesingleProduct= async(req,res,next)=>{
   }
 }
 
-
-module.exports = {getProducts, handlecreateProduct, handlesingleProduct};
+module.exports = { getProducts, handlecreateProduct, handlesingleProduct,handleDelete };
