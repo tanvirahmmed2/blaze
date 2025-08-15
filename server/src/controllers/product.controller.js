@@ -2,8 +2,8 @@ const createErr = require('http-errors');
 const slugify = require('slugify')
 const Product = require("../models/product.model");
 const { deleteProduct } = require('../service/product.service');
-const { runValidation } = require('../validator');
-const { Context } = require('express-validator/lib/context');
+
+
 
 const getProducts = async (req, res, next) => {
   try {
