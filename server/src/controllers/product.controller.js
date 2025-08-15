@@ -65,9 +65,16 @@ const handlecreateProduct = async (req, res, next) => {
 const handlesingleProduct= async(req,res,next)=>{
   try {
     const name= req.params.name
+    if(!name){
+      throw createErr(400, 'Enter product name')
+    }
     const slug= slugify(name)
 
     const product= await Product.findOne({slug: slug})
+    if(!product){
+      throw createErr(400, "no product found by this name")
+    }
+  
 
 
     res.status(200).send({
