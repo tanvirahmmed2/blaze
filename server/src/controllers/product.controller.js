@@ -165,8 +165,7 @@ const handleUpdate = async (req, res, next) => {
       }
       // Adjust this according to your schema
       updates.image = {
-        data: image.buffer,
-        contentType: image.mimetype
+        data: image.string
       };
     }
 
