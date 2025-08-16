@@ -1,10 +1,10 @@
 import React from 'react'
 import {Routes, Route} from 'react-router-dom'
-import About from './component/About'
-import Cart from './component/Cart'
-import Register from './component/Register'
-import Login from './component/Login'
-import Error from './component/Error'
+import About from './pages/About'
+import Cart from './pages/Cart'
+import Register from './pages/Register'
+import Login from './pages/Login'
+import Error from './pages/Error'
 
 
 const Router = () => {

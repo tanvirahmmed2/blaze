@@ -1,12 +1,10 @@
 import React from 'react'
-import {Helmet} from 'react-helmet'
+import PageTitle from '../component/PageTitle'
 
 const Login = () => {
   return (
     <div>
-      <Helmet>
-        <title>Login</title>
-      </Helmet>
+      <PageTitle title='Login'/>
       Login
     </div>
   )
