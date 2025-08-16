@@ -5,6 +5,7 @@ import Navbar from './component/Navbar'
 import Cart from './component/Cart'
 import Register from './component/Register'
 import Login from './component/Login'
+import Error from './component/Error'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path='/register' element={ <Register/>}/>
         <Route path='/login' element={ <Login/>}/>
         <Route path='/cart' element={ <Cart/>}/>
+        <Route path='/*' element={ <Error/>}/>
       </Routes>
     </div>
   )
