@@ -4,9 +4,9 @@ const { jwtactivationkey, clientURL } = require("../secret");
 const { createJsonwebtoken } = require("../helper/jsonwebtoken");
 const EmailwithNodeMailer = require("../helper/email");
 const jwt = require('jsonwebtoken')
-const bcrypt= require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const mongoose = require("mongoose");
-
+const cloudinary= require('../config/cloudinary')
 
 
 const getUser = async (req, res, next) => {
@@ -58,15 +58,15 @@ const registerUser = async (req, res, next) => {
     const { name, email, password, phone, address, username } = req.body;
 
 
-    const image= req.file;
-    if(!image){
-      throw createHttpError(401,' image is required')
+    const image = req.file;
+    if (!image) {
+      throw createHttpError(401, ' image is required')
     }
-    if(image.size> 1024*1024*2){
+    if (image.size > 1024 * 1024 * 2) {
       throw createHttpError(400, 'image size must be lower than 2MB')
 
     }
-    
+
 
     const userExist = await User.findOne({ email: email });
 
@@ -76,7 +76,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address, username, image},
+      { name, email, password, phone, address, username, image },
       jwtactivationkey,
       "10m"
     );
@@ -122,6 +122,16 @@ const activateUser = async (req, res, next) => {
     const decoded = jwt.verify(token, jwtactivationkey)
 
     if (!decoded) throw createHttpError(401, 'token not verified')
+    const image = decoded.image
+    if (image) {
+
+      const response= await cloudinary.uploader.upload(image, {
+        folder: 'ecommerceMernDB',
+      })
+
+      decoded.image= response.secure_url
+
+    }
     await User.create(decoded)
 
 
@@ -129,7 +139,7 @@ const activateUser = async (req, res, next) => {
 
     return res.status(200).json({
       message: `user registered successfully`,
-      payload: {decoded}
+      payload: { decoded }
     });
   } catch (error) {
     next(error)
@@ -138,19 +148,19 @@ const activateUser = async (req, res, next) => {
 
 }
 
-const getUserbyID= async(req,res,next)=>{
+const getUserbyID = async (req, res, next) => {
   try {
-    const id=req.body.id
-    const user= await User.findOne({_id:id})
-    if(!user) throw new Error(404, 'user not found')
-    
-      res.status(200).send({
-        message: 'user found',
-        payload: {user}
-      })
+    const id = req.body.id
+    const user = await User.findOne({ _id: id })
+    if (!user) throw new Error(404, 'user not found')
+
+    res.status(200).send({
+      message: 'user found',
+      payload: { user }
+    })
   } catch (error) {
     next(error)
-    
+
   }
 }
 
@@ -179,50 +189,50 @@ const updateUser = async (req, res) => {
 }
 
 
-const banuserbyId= async(req,res,next)=>{
+const banuserbyId = async (req, res, next) => {
   try {
-    const userId= req.params.id
-    const user=await User.findById(User, userId)
-    if(!user) return new Error(401, 'user doesnot exist')
-    const updates= {isBanned: true}
-    const updateOptions={ new: true, runvalidators: true, context: 'query'}
-    
+    const userId = req.params.id
+    const user = await User.findById(User, userId)
+    if (!user) return new Error(401, 'user doesnot exist')
+    const updates = { isBanned: true }
+    const updateOptions = { new: true, runvalidators: true, context: 'query' }
 
-    const updatedUser= await User.findByIdAndUpdate(
+
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
       updates,
       updateOptions
     ).select('-password')
-    if(!updatedUser){
+    if (!updatedUser) {
       throw createHttpError(400, 'user was not banned')
     }
     return res.status(200).send({
       message: "user banned succesfully",
-      payload: {updatedUser}
+      payload: { updatedUser }
     })
-    
+
   } catch (error) {
     next(error)
-    
+
   }
 }
 
 
-const handleupdatePassword= async (req,res,next)=>{
+const handleupdatePassword = async (req, res, next) => {
   try {
-    const {email, oldPassword, newPassword, confirmedPassword} = req.body
-    const userId= req.params.id
-    const user=await User.findById(User, userId)
-    const isPasswordMatch= await bcrypt.compare(oldPassword, user.password)
-    if(!isPasswordMatch){
+    const { email, oldPassword, newPassword, confirmedPassword } = req.body
+    const userId = req.params.id
+    const user = await User.findById(User, userId)
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password)
+    if (!isPasswordMatch) {
       throw createHttpError(401, "old password didn't match")
     }
-    const filter= {userId}
-    const update={$set: {password: newPassword}}
-    const updateOptions= {new: true}
+    const filter = { userId }
+    const update = { $set: { password: newPassword } }
+    const updateOptions = { new: true }
 
 
-    const updateUser= await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
       userId,
       update,
       updateOptions
@@ -233,15 +243,15 @@ const handleupdatePassword= async (req,res,next)=>{
 
     return res.status(200).send({
       message: 'password changed successfully',
-      payload:{updateUser}
-      
+      payload: { updateUser }
+
     })
   } catch (error) {
-    if( error instanceof mongoose.Error.CastError){
+    if (error instanceof mongoose.Error.CastError) {
       throw createHttpError(400, 'invalid id')
     }
     next(error)
-    
+
   }
 }
 
