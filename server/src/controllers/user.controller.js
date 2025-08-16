@@ -76,7 +76,7 @@ const registerUser = async (req, res, next) => {
 
 
     const token = createJsonwebtoken(
-      { name, email, password, phone, address, username, image },
+      { name, email, password, phone, address, username, image: image.path },
       jwtactivationkey,
       "10m"
     );
@@ -87,7 +87,7 @@ const registerUser = async (req, res, next) => {
       html: `
         <h2>Hello ${name}!</h2>
         <p>Please click below to activate your account:</p>
-        <a href="${clientURL}/api/users/verify/${token}" >
+        <a href="${clientURL}/api/users/verify?token${token}" >
           Activate Your Account
         </a>
       `
@@ -124,14 +124,13 @@ const activateUser = async (req, res, next) => {
     if (!decoded) throw createHttpError(401, 'token not verified')
     const image = decoded.image
     if (image) {
+  const response = await cloudinary.uploader.upload(req.file.path, {
+    folder: 'ecommerceMernDB',
+  });
 
-      const response= await cloudinary.uploader.upload(image, {
-        folder: 'ecommerceMernDB',
-      })
+  decoded.image = response.secure_url;
+}
 
-      decoded.image= response.secure_url
-
-    }
     await User.create(decoded)
 
 
