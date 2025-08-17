@@ -1,6 +1,7 @@
 import React from 'react'
 import PageTitle from '../component/PageTitle'
 import ProductsSidebar from '../component/ProductsSidebar'
+import Counter from '../component/Counter'
 
 const Home = () => {
     return (
@@ -13,6 +14,7 @@ const Home = () => {
                 </div>
                 <div className='flex-3'>
                     <h3>All Product</h3>
+                    <Counter/>
 
                 </div>
             </div>
