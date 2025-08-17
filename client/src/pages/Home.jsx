@@ -7,9 +7,14 @@ const Home = () => {
         <>
             <PageTitle title='Home' />
             <div className='w-full flex flex-row justify-around'>
+                <div className='flex-1'>
+                    <ProductsSidebar />
 
-                <ProductsSidebar />
-                <h3>All Product</h3>
+                </div>
+                <div className='flex-3'>
+                    <h3>All Product</h3>
+
+                </div>
             </div>
         </>
 
