@@ -5,11 +5,14 @@ import Cart from './pages/Cart'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Error from './pages/Error'
+import Home from './pages/Home'
 
 
 const Router = () => {
   return (
     <Routes>
+      
+      <Route path='/' element={<Home />} />
       <Route path='/about' element={<About />} />
       <Route path='/register' element={<Register />} />
       <Route path='/login' element={<Login />} />

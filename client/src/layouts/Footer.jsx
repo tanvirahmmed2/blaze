@@ -9,7 +9,7 @@ const Footer = () => {
             <button type='submit' className='border-2 px-2 rounded-lg'>Subscribe</button>
         </form>
         <div>
-            <p className='w-auto flex flex-row'>Copyright by @<h1>Tanvir Ahmmed</h1></p>
+            <p className='w-auto flex flex-row'>Copyright by @ <a href="https://tanvirahmmed.netlify.app">Tanvir Ahmmed</a></p>
 
         </div>
     </footer>
