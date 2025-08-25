@@ -1,6 +1,6 @@
 require("dotenv").config()
 
-const serverPort= process.env.PORT
+const serverPort= process.env.PORT || 5000
 const mongodbUrl= process.env.MONGODB_URL || "mongodb://localhost:27017/ecommerceMernDB"
 const defaultImage= process.env.DEFAULT_IMAGE
 const jwtactivationkey= process.env.JWT_ACTIVATION_KEY || "ysiytg73768534wbv85t362bvg85ygt"
